@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Player</title>
+    <style>
+        :root {
+            --neon: #00ff88;
+            --bg: #001100;
+        }
+
+        /* خلفية م optimized للأداء */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #000;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .matrix-code {
+            color: var(--neon);
+            font-family: monospace;
+            font-size: 12px;
+            position: absolute;
+            animation: matrixFall 20s linear infinite;
+            opacity: 0.5;
+            will-change: transform;
+        }
+
+        @keyframes matrixFall {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10" viewBox="0 0 8 10"><path fill="%2300ff88" d="M0 0L8 5L0 10Z"/></svg>') 2 5, auto;
+        }
+
+        .player {
+            width: 220px;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px solid var(--neon);
+            position: relative;
+        }
+
+        .playlist {
+            height: 120px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+
+        .playlist::-webkit-scrollbar {
+            width: 3px;
+            background: transparent;
+        }
+
+        .playlist::-webkit-scrollbar-thumb {
+            background: var(--neon);
+        }
+
+        .track {
+            color: var(--neon);
+            padding: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #00ff7720;
+            transition: padding 0.2s;
+        }
+
+        .track.active {
+            background: #00ff7715;
+        }
+
+        .progress {
+            height: 2px;
+            background: #000;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--neon);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .btn {
+            background: #000;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            padding: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--neon);
+            color: #000;
+        }
+
+        .led {
+            width: 6px;
+            height: 6px;
+            background: #ff0055;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg" id="matrixContainer"></div>
+
+    <div class="player">
+        <div class="led"></div>
+        <div class="playlist">
+            <div class="track active">Track 1</div>
+            <div class="track">Track 2</div>
+            <div class="track">Track 3</div>
+            <div class="track">Track 4</div>
+            <div class="track">Track 5</div>
+            <div class="track">Track 6</div>
+            <div class="track">Track 7</div>
+            <div class="track">Track 8</div>
+            <div class="track">Track 9</div>
+            <div class="track">Track 10</div>
+            <div class="track">Track 11</div>
+            <div class="track">Track 12</div>
+            <div class="track">Track 13</div>
+            <div class="track">Track 14</div>
+            <div class="track">Track 15</div>
+            <div class="track">Track 16</div>
+            <div class="track">Track 17</div>
+            <div class="track">Track 18</div>
+            <div class="track">Track 19</div>
+            <div class="track">Track 20</div>
+            <div class="track">Track 21</div>
+            <div class="track">Track 22</div>
+            <div class="track">Track 23</div>
+            <div class="track">Track 24</div>
+            <div class="track">Track 25</div>
+            <div class="track">Track 26</div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="controls">
+            <button class="btn">⏮</button>
+            <button class="btn">▶</button>
+            <button class="btn">⏭</button>
+        </div>
+    </div>
+
+    <script>
+        // تأثير الماتريكس الخفيف
+        function initMatrix() {
+            const chars = "01";
+            const container = document.getElementById('matrixContainer');
+            let activeCodes = 0;
+            const maxCodes = 12;
+
+            function createCode() {
+                if (activeCodes >= maxCodes) return;
+                
+                const code = document.createElement('div');
+                code.className = 'matrix-code';
+                code.style.left = Math.random() * 97 + '%';
+                code.style.animationDuration = Math.random() * 15 + 10 + 's';
+                code.textContent = chars[Math.floor(Math.random() * chars.length)];
+                
+                code.onanimationend = () => code.remove();
+                container.appendChild(code);
+                activeCodes++;
+                
+                setTimeout(() => activeCodes--, 20000);
+            }
+
+            setInterval(createCode, 600);
+        }
+        initMatrix();
+
+        // بيانات الأغاني الكاملة
+        const tracks = [
+            {title: "Track 1", url: "https://audio.jukehost.co.uk/d8HwZHM9cIhSzQ3cumxujIJm9aclvQGC"},
+            {title: "Track 2", url: "https://audio.jukehost.co.uk/4Yb2VgVTUuBwchNpQz40pFYyCA4DdFU3"},
+            {title: "Track 3", url: "https://audio.jukehost.co.uk/W85v4OMT1ezEkeC5zE31lCNP5GDS5XcJ"},
+            {title: "Track 4", url: "https://audio.jukehost.co.uk/zd4IK0tB4QfUzvXNVKaFZ1QOoZBB5VB7"},
+            {title: "Track 5", url: "https://audio.jukehost.co.uk/2PLGDNnBknCtpmbRP9Gjs5fPZ9Khc6OE"},
+            {title: "Track 6", url: "https://audio.jukehost.co.uk/uUCPCaLP3TCgTkchwr7oXKJR38NwTPbz"},
+            {title: "Track 7", url: "https://audio.jukehost.co.uk/aRBVDiZE4mtqkSV7gr5PH6Ot7PxOlvsv"},
+            {title: "Track 8", url: "https://audio.jukehost.co.uk/E1tBmXESn9aCYXmGmhg6IKYV65s3En9Z"},
+            {title: "Track 9", url: "https://audio.jukehost.co.uk/rZ0sMG6ryXUkzN8u1OvO9D4ArI0FxiY7"},
+            {title: "Track 10", url: "https://audio.jukehost.co.uk/IIraIkZxPE31fUjX2k6mRW7XgvdaiNkc"},
+            {title: "Track 11", url: "https://audio.jukehost.co.uk/M21IIANEc3icIeVmgJE2KRsUqsMXhtJq"},
+            {title: "Track 12", url: "https://audio.jukehost.co.uk/c21AkiBnNHv6qXeABxcQoaMrzVnDGAd7"},
+            {title: "Track 13", url: "https://audio.jukehost.co.uk/ZbW3UlfqJAbYqj7Xvu9rdGXAazQOEQ77"},
+            {title: "Track 14", url: "https://audio.jukehost.co.uk/6pJa02uEKpRMpep4bQPfpnNP6EY2cZ3m"},
+            {title: "Track 15", url: "https://audio.jukehost.co.uk/Wrho0rsW58yEzE7giaGpdL7ahtvj9ujv"},
+            {title: "Track 16", url: "https://audio.jukehost.co.uk/BJKD1nqVBeNlTWilerCwizk5BurLVieG"},
+            {title: "Track 17", url: "https://audio.jukehost.co.uk/p2A7mvMdhPGK1dKu6zWHOdHoRR1HnxZ7"},
+            {title: "Track 18", url: "https://audio.jukehost.co.uk/31penflsxslF7PD52oyeePJC6uNb83jN"},
+            {title: "Track 19", url: "https://audio.jukehost.co.uk/aETNt5FXiPVawrydSTs7ipbk3ZYOHeD4"},
+            {title: "Track 20", url: "https://audio.jukehost.co.uk/6Ui2MLkhE6kCaMmJvGwSp6jr03FtKKle"},
+            {title: "Track 21", url: "https://audio.jukehost.co.uk/ZbiTBU5ljj8CmGMJIiXEb3leq6B2nZaP"},
+            {title: "Track 22", url: "https://audio.jukehost.co.uk/s6pDsXNUbgyMBXC3wzmK31uK44dzVNmm"},
+            {title: "Track 23", url: "https://audio.jukehost.co.uk/15FhftIBUfQ7SQGSeb9HUEOxwO4F9Qh7"},
+            {title: "Track 24", url: "https://audio.jukehost.co.uk/Ua3dMm776RqKhFWA214YiiwK0XkqhYVZ"},
+            {title: "Track 25", url: "https://audio.jukehost.co.uk/rRFIOnCAVANTlltvkR9Iwa9m0wnIG5Y0"},
+            {title: "Track 26", url: "https://audio.jukehost.co.uk/PQazWGlTh9MGfzcvKlcxKDX68RIS3g8A"}
+        ];
+
+        class ResourceEfficientPlayer {
+            constructor() {
+                this.audio = new Audio();
+                this.currentTrack = 0;
+                this.init();
+            }
+
+            init() {
+                this.cacheDOM();
+                this.setupListeners();
+                this.loadTrack(0);
+            }
+
+            cacheDOM() {
+                this.playButton = document.querySelector('.btn:nth-child(2)');
+                this.tracks = document.querySelectorAll('.track');
+                this.progressBar = document.querySelector('.progress-bar');
+            }
+
+            setupListeners() {
+                document.querySelectorAll('.btn').forEach((btn, i) => 
+                    btn.onclick = () => this.handleControls(i)
+                );
+
+                this.tracks.forEach((track, i) => 
+                    track.onclick = () => this.loadTrack(i)
+                );
+
+                this.audio.ontimeupdate = () => this.updateProgress();
+                this.audio.onended = () => this.nextTrack();
+            }
+
+            handleControls(index) {
+                const actions = [
+                    () => this.prevTrack(),
+                    () => this.togglePlay(),
+                    () => this.nextTrack()
+                ];
+                actions[index]();
+            }
+
+            loadTrack(index) {
+                this.currentTrack = index;
+                this.audio.src = tracks[index].url;
+                this.audio.play().catch(console.error);
+                this.updateUI();
+            }
+
+            togglePlay() {
+                this.audio.paused ? this.audio.play() : this.audio.pause();
+                this.playButton.textContent = this.audio.paused ? '▶' : '⏸';
+            }
+
+            nextTrack() {
+                this.currentTrack = (this.currentTrack + 1) % tracks.length;
+                this.loadTrack(this.currentTrack);
+            }
+
+            prevTrack() {
+                this.currentTrack = (this.currentTrack - 1 + tracks.length) % tracks.length;
+                this.loadTrack(this.currentTrack);
+            }
+
+            updateProgress() {
+                const progress = (this.audio.currentTime / this.audio.duration) * 100 || 0;
+                this.progressBar.style.width = `${progress}%`;
+            }
+
+            updateUI() {
+                this.tracks.forEach(track => track.classList.remove('active'));
+                this.tracks[this.currentTrack].classList.add('active');
+            }
+        }
+
+        new ResourceEfficientPlayer();
+    </script>
+</body>
+</html>
